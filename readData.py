@@ -14,11 +14,11 @@ def findType(value)->str:
     elif isinstance(value, datetime):return "date"
     else:return type(value).__name__
 
-def findColumns(value,path:str,notes:Dict[str,Any],pathsRead:tuple):
+def findColumns(value,path:str,notes:dict[str,Any],pathsRead:set[str]):
     if isinstance(value,dict):
         for fieldName,fieldVal in value.items():
             newPath = f"{path}.{fieldName}" if path else fieldName
-            pathsRead+=(newPath,)
+            pathsRead.add(newPath)
             findColumns(fieldVal,newPath,notes,pathsRead)
     elif isinstance(value,list):
         if path:
@@ -26,7 +26,7 @@ def findColumns(value,path:str,notes:Dict[str,Any],pathsRead:tuple):
             notes[path]["length"].append(len(value))
         for i in value:
             newPath = f"{path}[]" if path else "[]"
-            pathsRead+=(newPath,)
+            pathsRead.add(newPath)
             findColumns(i,newPath,notes,pathsRead)
     elif value is None:
         if path:
@@ -35,7 +35,13 @@ def findColumns(value,path:str,notes:Dict[str,Any],pathsRead:tuple):
         if path:
             notes[path]["types"][findType(value)]+=1
         if not notes[path]["limit"]:
-            
+            newVal = str(value)if isinstance(value,(list,dict)) else value
+            notes[path]["distinct"].add(newVal)
+            if len(notes[path]["distinct"])>50:
+                notes[path]["limit"] = True
+                notes[path]["distinct"].clear()
+
+
 
 
 
