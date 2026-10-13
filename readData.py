@@ -6,6 +6,7 @@ Reads the sample docs from each collection and tracks which type of data in each
 import json
 from datetime import datetime
 from typing import Any
+from collections import defaultdict, Counter
 
 def findType(value)->str:
     if isinstance(value,bool):return "boolean"
@@ -23,7 +24,7 @@ def findColumns(value,path:str,notes:dict[str,Any],pathsRead:set[str]):
     elif isinstance(value,list):
         if path:
             notes[path]["types"]["list"]+=1
-            notes[path]["length"].append(len(value))
+            notes[path]["listLength"].append(len(value))
         for i in value:
             newPath = f"{path}[]" if path else "[]"
             pathsRead.add(newPath)
@@ -69,7 +70,7 @@ def report(notes:dict[str,Any],docCount:int)->dict[str,Any]:
                 "maxLen":max(length),
                 "avgLen":round(sum(length)/len(length),2)
             }
-        isCategory = ((not data["limit"]) and (len(data["distinct"]<=10)and (len(data["distinct"])>0)))
+        isCategory = ((not data["limit"]) and (len(data["distinct"])<=10) and (len(data["distinct"])>0))
         if isCategory:
             fieldData["categorical"] = True
             fieldData["distinct"] = list(data["distinct"])
@@ -81,15 +82,15 @@ def report(notes:dict[str,Any],docCount:int)->dict[str,Any]:
 def profileData(db:dict,collectionName:list[str],sampleSize:int = 100):
     finalReport={}
     for collection in collectionName:
-        notes = {
+        notes = defaultdict(lambda: {
             "doccount":0,
-            "types":{},
+            "types":Counter(),
             "distinct":set(),
             "limit":False,
             "listLength":[]
-        }
+        })
 
-        docs = db.get(collectionName,[])[:sampleSize]
+        docs = db.get(collection,[])[:sampleSize]
         countDocs = len(docs)
 
         for doc in docs:
@@ -97,11 +98,8 @@ def profileData(db:dict,collectionName:list[str],sampleSize:int = 100):
             findColumns(doc,"",notes,docsRead)
 
             for path in docsRead:
-                try:
-                    notes[path]["doccount"] += 1
-                except KeyError:
-                    notes[path]["document"] = 1
-        finalReport[collectionName] = {
+                notes[path]["doccount"] += 1
+        finalReport[collection] = {
             "Total docs sampled":countDocs,
             "Fields":report(notes,countDocs)
         }
@@ -117,7 +115,3 @@ with open(file) as f:
 profile = profileData(data,["customers","products","orders"])
 print(len(profile))
 print(profile)
-
-
-
-
