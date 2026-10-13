@@ -1,0 +1,1230 @@
+{
+  "metadata": {
+    "description": "Sample Online Shop NoSQL seed dataset for SchemaShift migration testing.",
+    "collections_count": 3,
+    "documents_summary": {
+      "customers": 25,
+      "products": 25,
+      "orders": 35
+    },
+    "intentional_imperfections": [
+      "Missing address field in customers (cust_005, cust_018)",
+      "Missing/empty phone_numbers in customers (cust_003, cust_012, cust_022)",
+      "String prices instead of floats in products (prod_004, prod_015)",
+      "Mixed date formats across collections (ISO 8601, YYYY-MM-DD, DD/MM/YYYY, Unix epoch millis)"
+    ]
+  },
+  "customers": [
+    {
+      "_id": "cust_001",
+      "name": "Alice Smith",
+      "email": "alice.smith@example.com",
+      "signup_date": "2023-02-02",
+      "address": {
+        "street": "112 Main St, Apt 1",
+        "city": "Gotham",
+        "pincode": "10312"
+      },
+      "phone_numbers": [
+        "+1-555-01010",
+        "+1-555-01011"
+      ]
+    },
+    {
+      "_id": "cust_002",
+      "name": "Bob Johnson",
+      "email": "bob.johnson@example.com",
+      "signup_date": "03/03/2022",
+      "address": {
+        "street": "124 Main St, Apt 2",
+        "city": "Star City",
+        "pincode": "10624"
+      },
+      "phone_numbers": [
+        "+1-555-01020"
+      ]
+    },
+    {
+      "_id": "cust_003",
+      "name": "Charlie Williams",
+      "email": "charlie.williams@example.com",
+      "signup_date": 1673827200000,
+      "address": {
+        "street": "136 Main St, Apt 3",
+        "city": "Central City",
+        "pincode": "10936"
+      }
+    },
+    {
+      "_id": "cust_004",
+      "name": "Diana Brown",
+      "email": "diana.brown@example.com",
+      "signup_date": "2023-05-05T04:15:30Z",
+      "address": {
+        "street": "148 Main St, Apt 4",
+        "city": "Coast City",
+        "pincode": "11248"
+      },
+      "phone_numbers": [
+        "+1-555-01040"
+      ]
+    },
+    {
+      "_id": "cust_005",
+      "name": "Evan Jones",
+      "email": "evan.jones@example.com",
+      "signup_date": "2023-06-06",
+      "phone_numbers": [
+        "+1-555-01050",
+        "+1-555-01051"
+      ]
+    },
+    {
+      "_id": "cust_006",
+      "name": "Fiona Garcia",
+      "email": "fiona.garcia@example.com",
+      "signup_date": "07/07/2022",
+      "address": {
+        "street": "172 Main St, Apt 6",
+        "city": "Keystone",
+        "pincode": "11872"
+      },
+      "phone_numbers": [
+        "+1-555-01060"
+      ]
+    },
+    {
+      "_id": "cust_007",
+      "name": "George Miller",
+      "email": "george.miller@example.com",
+      "signup_date": 1675555200000,
+      "address": {
+        "street": "184 Main St, Apt 7",
+        "city": "Midway",
+        "pincode": "12184"
+      },
+      "phone_numbers": [
+        "+1-555-01070",
+        "+1-555-01071"
+      ]
+    },
+    {
+      "_id": "cust_008",
+      "name": "Hannah Davis",
+      "email": "hannah.davis@example.com",
+      "signup_date": "2023-09-09T08:15:30Z",
+      "address": {
+        "street": "196 Main St, Apt 8",
+        "city": "Metropolis",
+        "pincode": "12496"
+      },
+      "phone_numbers": [
+        "+1-555-01080"
+      ]
+    },
+    {
+      "_id": "cust_009",
+      "name": "Ian Rodriguez",
+      "email": "ian.rodriguez@example.com",
+      "signup_date": "2023-10-10",
+      "address": {
+        "street": "208 Main St, Apt 9",
+        "city": "Gotham",
+        "pincode": "12808"
+      },
+      "phone_numbers": [
+        "+1-555-01090",
+        "+1-555-01091"
+      ]
+    },
+    {
+      "_id": "cust_010",
+      "name": "Julia Martinez",
+      "email": "julia.martinez@example.com",
+      "signup_date": "11/11/2022",
+      "address": {
+        "street": "220 Main St, Apt 10",
+        "city": "Star City",
+        "pincode": "13120"
+      },
+      "phone_numbers": [
+        "+1-555-01100"
+      ]
+    },
+    {
+      "_id": "cust_011",
+      "name": "Kevin Hernandez",
+      "email": "kevin.hernandez@example.com",
+      "signup_date": 1677283200000,
+      "address": {
+        "street": "232 Main St, Apt 11",
+        "city": "Central City",
+        "pincode": "13432"
+      },
+      "phone_numbers": [
+        "+1-555-01110",
+        "+1-555-01111"
+      ]
+    },
+    {
+      "_id": "cust_012",
+      "name": "Laura Lopez",
+      "email": "laura.lopez@example.com",
+      "signup_date": "2023-01-13T12:15:30Z",
+      "address": {
+        "street": "244 Main St, Apt 12",
+        "city": "Coast City",
+        "pincode": "13744"
+      },
+      "phone_numbers": []
+    },
+    {
+      "_id": "cust_013",
+      "name": "Michael Gonzalez",
+      "email": "michael.gonzalez@example.com",
+      "signup_date": "2023-02-14",
+      "address": {
+        "street": "256 Main St, Apt 13",
+        "city": "Bl\u00fcdhaven",
+        "pincode": "14056"
+      },
+      "phone_numbers": [
+        "+1-555-01130",
+        "+1-555-01131"
+      ]
+    },
+    {
+      "_id": "cust_014",
+      "name": "Nina Wilson",
+      "email": "nina.wilson@example.com",
+      "signup_date": "15/03/2022",
+      "address": {
+        "street": "268 Main St, Apt 14",
+        "city": "Keystone",
+        "pincode": "14368"
+      },
+      "phone_numbers": [
+        "+1-555-01140"
+      ]
+    },
+    {
+      "_id": "cust_015",
+      "name": "Oscar Anderson",
+      "email": "oscar.anderson@example.com",
+      "signup_date": 1679011200000,
+      "address": {
+        "street": "280 Main St, Apt 15",
+        "city": "Midway",
+        "pincode": "14680"
+      },
+      "phone_numbers": [
+        "+1-555-01150",
+        "+1-555-01151"
+      ]
+    },
+    {
+      "_id": "cust_016",
+      "name": "Paula Thomas",
+      "email": "paula.thomas@example.com",
+      "signup_date": "2023-05-17T16:15:30Z",
+      "address": {
+        "street": "292 Main St, Apt 16",
+        "city": "Metropolis",
+        "pincode": "14992"
+      },
+      "phone_numbers": [
+        "+1-555-01160"
+      ]
+    },
+    {
+      "_id": "cust_017",
+      "name": "Quinn Taylor",
+      "email": "quinn.taylor@example.com",
+      "signup_date": "2023-06-18",
+      "address": {
+        "street": "304 Main St, Apt 17",
+        "city": "Gotham",
+        "pincode": "15304"
+      },
+      "phone_numbers": [
+        "+1-555-01170",
+        "+1-555-01171"
+      ]
+    },
+    {
+      "_id": "cust_018",
+      "name": "Rachel Moore",
+      "email": "rachel.moore@example.com",
+      "signup_date": "19/07/2022",
+      "phone_numbers": [
+        "+1-555-01180"
+      ]
+    },
+    {
+      "_id": "cust_019",
+      "name": "Sam Jackson",
+      "email": "sam.jackson@example.com",
+      "signup_date": 1680739200000,
+      "address": {
+        "street": "328 Main St, Apt 19",
+        "city": "Central City",
+        "pincode": "15928"
+      },
+      "phone_numbers": [
+        "+1-555-01190",
+        "+1-555-01191"
+      ]
+    },
+    {
+      "_id": "cust_020",
+      "name": "Tina Martin",
+      "email": "tina.martin@example.com",
+      "signup_date": "2023-09-21T20:15:30Z",
+      "address": {
+        "street": "340 Main St, Apt 20",
+        "city": "Coast City",
+        "pincode": "16240"
+      },
+      "phone_numbers": [
+        "+1-555-01200"
+      ]
+    },
+    {
+      "_id": "cust_021",
+      "name": "Ulysses Lee",
+      "email": "ulysses.lee@example.com",
+      "signup_date": "2023-10-22",
+      "address": {
+        "street": "352 Main St, Apt 21",
+        "city": "Bl\u00fcdhaven",
+        "pincode": "16552"
+      },
+      "phone_numbers": [
+        "+1-555-01210",
+        "+1-555-01211"
+      ]
+    },
+    {
+      "_id": "cust_022",
+      "name": "Victoria Perez",
+      "email": "victoria.perez@example.com",
+      "signup_date": "23/11/2022",
+      "address": {
+        "street": "364 Main St, Apt 22",
+        "city": "Keystone",
+        "pincode": "16864"
+      }
+    },
+    {
+      "_id": "cust_023",
+      "name": "Will Thompson",
+      "email": "will.thompson@example.com",
+      "signup_date": 1682467200000,
+      "address": {
+        "street": "376 Main St, Apt 23",
+        "city": "Midway",
+        "pincode": "17176"
+      },
+      "phone_numbers": [
+        "+1-555-01230",
+        "+1-555-01231"
+      ]
+    },
+    {
+      "_id": "cust_024",
+      "name": "Xena White",
+      "email": "xena.white@example.com",
+      "signup_date": "2023-01-25T00:15:30Z",
+      "address": {
+        "street": "388 Main St, Apt 24",
+        "city": "Metropolis",
+        "pincode": "17488"
+      },
+      "phone_numbers": [
+        "+1-555-01240"
+      ]
+    },
+    {
+      "_id": "cust_025",
+      "name": "Yusuf Harris",
+      "email": "yusuf.harris@example.com",
+      "signup_date": "2023-02-26",
+      "address": {
+        "street": "400 Main St, Apt 25",
+        "city": "Gotham",
+        "pincode": "17800"
+      },
+      "phone_numbers": [
+        "+1-555-01250",
+        "+1-555-01251"
+      ]
+    }
+  ],
+  "products": [
+    {
+      "_id": "prod_001",
+      "name": "Wireless Ergonomic Mouse",
+      "price": 29.99,
+      "tags": [
+        "electronics",
+        "accessories",
+        "office"
+      ]
+    },
+    {
+      "_id": "prod_002",
+      "name": "Mechanical Gaming Keyboard",
+      "price": 89.95,
+      "tags": [
+        "electronics",
+        "gaming",
+        "peripherals"
+      ]
+    },
+    {
+      "_id": "prod_003",
+      "name": "UltraQuiet USB Fan",
+      "price": 15.0,
+      "tags": [
+        "office",
+        "gadgets"
+      ]
+    },
+    {
+      "_id": "prod_004",
+      "name": "27-inch 4K Monitor",
+      "price": "349.99",
+      "tags": [
+        "electronics",
+        "displays"
+      ]
+    },
+    {
+      "_id": "prod_005",
+      "name": "HD Webcam 1080p",
+      "price": 45.5,
+      "tags": [
+        "electronics",
+        "video"
+      ]
+    },
+    {
+      "_id": "prod_006",
+      "name": "Noise Canceling Headphones",
+      "price": 129.99,
+      "tags": [
+        "audio",
+        "electronics",
+        "wireless"
+      ]
+    },
+    {
+      "_id": "prod_007",
+      "name": "USB-C Multi-Port Hub",
+      "price": 39.99,
+      "tags": [
+        "accessories",
+        "connectors"
+      ]
+    },
+    {
+      "_id": "prod_008",
+      "name": "Adjustable Desk Lamp",
+      "price": 24.99,
+      "tags": [
+        "office",
+        "lighting"
+      ]
+    },
+    {
+      "_id": "prod_009",
+      "name": "Leather Notebook & Pen Set",
+      "price": 19.99,
+      "tags": [
+        "stationery",
+        "office"
+      ]
+    },
+    {
+      "_id": "prod_010",
+      "name": "Vertical Monitor Stand",
+      "price": 42.0,
+      "tags": [
+        "office",
+        "furniture"
+      ]
+    },
+    {
+      "_id": "prod_011",
+      "name": "Bluetooth Pocket Speaker",
+      "price": 34.99,
+      "tags": [
+        "audio",
+        "wireless"
+      ]
+    },
+    {
+      "_id": "prod_012",
+      "name": "Smart LED Desk Clock",
+      "price": 22.5,
+      "tags": [
+        "gadgets",
+        "home"
+      ]
+    },
+    {
+      "_id": "prod_013",
+      "name": "Microfiber Screen Cleaner Kit",
+      "price": 9.99,
+      "tags": [
+        "accessories",
+        "maintenance"
+      ]
+    },
+    {
+      "_id": "prod_014",
+      "name": "Ergonomic Footrest",
+      "price": 29.5,
+      "tags": [
+        "office",
+        "furniture"
+      ]
+    },
+    {
+      "_id": "prod_015",
+      "name": "Cat-6 Ethernet Cable 15ft",
+      "price": "11.25",
+      "tags": [
+        "cables",
+        "networking"
+      ]
+    },
+    {
+      "_id": "prod_016",
+      "name": "Surge Protector Power Strip",
+      "price": 21.99,
+      "tags": [
+        "electronics",
+        "power"
+      ]
+    },
+    {
+      "_id": "prod_017",
+      "name": "External 1TB SSD",
+      "price": 79.99,
+      "tags": [
+        "storage",
+        "electronics"
+      ]
+    },
+    {
+      "_id": "prod_018",
+      "name": "Wireless Charging Pad",
+      "price": 18.0,
+      "tags": [
+        "wireless",
+        "accessories"
+      ]
+    },
+    {
+      "_id": "prod_019",
+      "name": "Standing Desk Converter",
+      "price": 199.99,
+      "tags": [
+        "furniture",
+        "office"
+      ]
+    },
+    {
+      "_id": "prod_020",
+      "name": "Laptop Cooling Pad",
+      "price": 27.99,
+      "tags": [
+        "accessories",
+        "cooling"
+      ]
+    },
+    {
+      "_id": "prod_021",
+      "name": "Privacy Screen Filter 15.6\"",
+      "price": 31.5,
+      "tags": [
+        "accessories",
+        "office"
+      ]
+    },
+    {
+      "_id": "prod_022",
+      "name": "Cable Management Sleeve Set",
+      "price": 12.99,
+      "tags": [
+        "accessories",
+        "organization"
+      ]
+    },
+    {
+      "_id": "prod_023",
+      "name": "Portable Power Bank 20k mAh",
+      "price": 49.99,
+      "tags": [
+        "power",
+        "mobile"
+      ]
+    },
+    {
+      "_id": "prod_024",
+      "name": "Dual Monitor Mount Arm",
+      "price": 64.99,
+      "tags": [
+        "office",
+        "furniture"
+      ]
+    },
+    {
+      "_id": "prod_025",
+      "name": "Desk Mat Felt Pad Large",
+      "price": 16.5,
+      "tags": [
+        "office",
+        "accessories"
+      ]
+    }
+  ],
+  "orders": [
+    {
+      "_id": "ord_001",
+      "customer_id": "cust_002",
+      "order_date": "2024-02-02",
+      "status": "processing",
+      "items": [
+        {
+          "product_id": "prod_004",
+          "quantity": 1,
+          "unit_price": 349.99
+        },
+        {
+          "product_id": "prod_011",
+          "quantity": 2,
+          "unit_price": 34.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_002",
+      "customer_id": "cust_003",
+      "order_date": "03/02/2024",
+      "status": "shipped",
+      "items": [
+        {
+          "product_id": "prod_007",
+          "quantity": 1,
+          "unit_price": 39.99
+        },
+        {
+          "product_id": "prod_014",
+          "quantity": 2,
+          "unit_price": 29.5
+        },
+        {
+          "product_id": "prod_021",
+          "quantity": 3,
+          "unit_price": 31.5
+        }
+      ]
+    },
+    {
+      "_id": "ord_003",
+      "customer_id": "cust_004",
+      "order_date": 1708084800000,
+      "status": "delivered",
+      "items": [
+        {
+          "product_id": "prod_010",
+          "quantity": 1,
+          "unit_price": 42.0
+        }
+      ]
+    },
+    {
+      "_id": "ord_004",
+      "customer_id": "cust_005",
+      "order_date": "2024-02-05T04:30:00Z",
+      "status": "cancelled",
+      "items": [
+        {
+          "product_id": "prod_013",
+          "quantity": 1,
+          "unit_price": 9.99
+        },
+        {
+          "product_id": "prod_020",
+          "quantity": 2,
+          "unit_price": 27.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_005",
+      "customer_id": "cust_006",
+      "order_date": "2024-02-06",
+      "status": "pending",
+      "items": [
+        {
+          "product_id": "prod_016",
+          "quantity": 1,
+          "unit_price": 21.99
+        },
+        {
+          "product_id": "prod_023",
+          "quantity": 2,
+          "unit_price": 49.99
+        },
+        {
+          "product_id": "prod_005",
+          "quantity": 3,
+          "unit_price": 45.5
+        }
+      ]
+    },
+    {
+      "_id": "ord_006",
+      "customer_id": "cust_007",
+      "order_date": "07/02/2024",
+      "status": "processing",
+      "items": [
+        {
+          "product_id": "prod_019",
+          "quantity": 1,
+          "unit_price": 199.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_007",
+      "customer_id": "cust_008",
+      "order_date": 1708257600000,
+      "status": "shipped",
+      "items": [
+        {
+          "product_id": "prod_022",
+          "quantity": 1,
+          "unit_price": 12.99
+        },
+        {
+          "product_id": "prod_004",
+          "quantity": 2,
+          "unit_price": 349.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_008",
+      "customer_id": "cust_009",
+      "order_date": "2024-02-09T08:30:00Z",
+      "status": "delivered",
+      "items": [
+        {
+          "product_id": "prod_025",
+          "quantity": 1,
+          "unit_price": 16.5
+        },
+        {
+          "product_id": "prod_007",
+          "quantity": 2,
+          "unit_price": 39.99
+        },
+        {
+          "product_id": "prod_014",
+          "quantity": 3,
+          "unit_price": 29.5
+        }
+      ]
+    },
+    {
+      "_id": "ord_009",
+      "customer_id": "cust_010",
+      "order_date": "2024-02-10",
+      "status": "cancelled",
+      "items": [
+        {
+          "product_id": "prod_003",
+          "quantity": 1,
+          "unit_price": 15.0
+        }
+      ]
+    },
+    {
+      "_id": "ord_010",
+      "customer_id": "cust_011",
+      "order_date": "11/02/2024",
+      "status": "pending",
+      "items": [
+        {
+          "product_id": "prod_006",
+          "quantity": 1,
+          "unit_price": 129.99
+        },
+        {
+          "product_id": "prod_013",
+          "quantity": 2,
+          "unit_price": 9.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_011",
+      "customer_id": "cust_012",
+      "order_date": 1708430400000,
+      "status": "processing",
+      "items": [
+        {
+          "product_id": "prod_009",
+          "quantity": 1,
+          "unit_price": 19.99
+        },
+        {
+          "product_id": "prod_016",
+          "quantity": 2,
+          "unit_price": 21.99
+        },
+        {
+          "product_id": "prod_023",
+          "quantity": 3,
+          "unit_price": 49.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_012",
+      "customer_id": "cust_013",
+      "order_date": "2024-02-13T12:30:00Z",
+      "status": "shipped",
+      "items": [
+        {
+          "product_id": "prod_012",
+          "quantity": 1,
+          "unit_price": 22.5
+        }
+      ]
+    },
+    {
+      "_id": "ord_013",
+      "customer_id": "cust_014",
+      "order_date": "2024-02-14",
+      "status": "delivered",
+      "items": [
+        {
+          "product_id": "prod_015",
+          "quantity": 1,
+          "unit_price": 11.25
+        },
+        {
+          "product_id": "prod_022",
+          "quantity": 2,
+          "unit_price": 12.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_014",
+      "customer_id": "cust_015",
+      "order_date": "15/02/2024",
+      "status": "cancelled",
+      "items": [
+        {
+          "product_id": "prod_018",
+          "quantity": 1,
+          "unit_price": 18.0
+        },
+        {
+          "product_id": "prod_025",
+          "quantity": 2,
+          "unit_price": 16.5
+        },
+        {
+          "product_id": "prod_007",
+          "quantity": 3,
+          "unit_price": 39.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_015",
+      "customer_id": "cust_016",
+      "order_date": 1708603200000,
+      "status": "pending",
+      "items": [
+        {
+          "product_id": "prod_021",
+          "quantity": 1,
+          "unit_price": 31.5
+        }
+      ]
+    },
+    {
+      "_id": "ord_016",
+      "customer_id": "cust_017",
+      "order_date": "2024-02-17T16:30:00Z",
+      "status": "processing",
+      "items": [
+        {
+          "product_id": "prod_024",
+          "quantity": 1,
+          "unit_price": 64.99
+        },
+        {
+          "product_id": "prod_006",
+          "quantity": 2,
+          "unit_price": 129.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_017",
+      "customer_id": "cust_018",
+      "order_date": "2024-02-18",
+      "status": "shipped",
+      "items": [
+        {
+          "product_id": "prod_002",
+          "quantity": 1,
+          "unit_price": 89.95
+        },
+        {
+          "product_id": "prod_009",
+          "quantity": 2,
+          "unit_price": 19.99
+        },
+        {
+          "product_id": "prod_016",
+          "quantity": 3,
+          "unit_price": 21.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_018",
+      "customer_id": "cust_019",
+      "order_date": "19/02/2024",
+      "status": "delivered",
+      "items": [
+        {
+          "product_id": "prod_005",
+          "quantity": 1,
+          "unit_price": 45.5
+        }
+      ]
+    },
+    {
+      "_id": "ord_019",
+      "customer_id": "cust_020",
+      "order_date": 1708776000000,
+      "status": "cancelled",
+      "items": [
+        {
+          "product_id": "prod_008",
+          "quantity": 1,
+          "unit_price": 24.99
+        },
+        {
+          "product_id": "prod_015",
+          "quantity": 2,
+          "unit_price": 11.25
+        }
+      ]
+    },
+    {
+      "_id": "ord_020",
+      "customer_id": "cust_021",
+      "order_date": "2024-02-21T20:30:00Z",
+      "status": "pending",
+      "items": [
+        {
+          "product_id": "prod_011",
+          "quantity": 1,
+          "unit_price": 34.99
+        },
+        {
+          "product_id": "prod_018",
+          "quantity": 2,
+          "unit_price": 18.0
+        },
+        {
+          "product_id": "prod_025",
+          "quantity": 3,
+          "unit_price": 16.5
+        }
+      ]
+    },
+    {
+      "_id": "ord_021",
+      "customer_id": "cust_022",
+      "order_date": "2024-02-22",
+      "status": "processing",
+      "items": [
+        {
+          "product_id": "prod_014",
+          "quantity": 1,
+          "unit_price": 29.5
+        }
+      ]
+    },
+    {
+      "_id": "ord_022",
+      "customer_id": "cust_023",
+      "order_date": "23/02/2024",
+      "status": "shipped",
+      "items": [
+        {
+          "product_id": "prod_017",
+          "quantity": 1,
+          "unit_price": 79.99
+        },
+        {
+          "product_id": "prod_024",
+          "quantity": 2,
+          "unit_price": 64.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_023",
+      "customer_id": "cust_024",
+      "order_date": 1708948800000,
+      "status": "delivered",
+      "items": [
+        {
+          "product_id": "prod_020",
+          "quantity": 1,
+          "unit_price": 27.99
+        },
+        {
+          "product_id": "prod_002",
+          "quantity": 2,
+          "unit_price": 89.95
+        },
+        {
+          "product_id": "prod_009",
+          "quantity": 3,
+          "unit_price": 19.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_024",
+      "customer_id": "cust_025",
+      "order_date": "2024-02-25T00:30:00Z",
+      "status": "cancelled",
+      "items": [
+        {
+          "product_id": "prod_023",
+          "quantity": 1,
+          "unit_price": 49.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_025",
+      "customer_id": "cust_001",
+      "order_date": "2024-02-26",
+      "status": "pending",
+      "items": [
+        {
+          "product_id": "prod_001",
+          "quantity": 1,
+          "unit_price": 29.99
+        },
+        {
+          "product_id": "prod_008",
+          "quantity": 2,
+          "unit_price": 24.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_026",
+      "customer_id": "cust_002",
+      "order_date": "27/02/2024",
+      "status": "processing",
+      "items": [
+        {
+          "product_id": "prod_004",
+          "quantity": 1,
+          "unit_price": 349.99
+        },
+        {
+          "product_id": "prod_011",
+          "quantity": 2,
+          "unit_price": 34.99
+        },
+        {
+          "product_id": "prod_018",
+          "quantity": 3,
+          "unit_price": 18.0
+        }
+      ]
+    },
+    {
+      "_id": "ord_027",
+      "customer_id": "cust_003",
+      "order_date": 1709121600000,
+      "status": "shipped",
+      "items": [
+        {
+          "product_id": "prod_007",
+          "quantity": 1,
+          "unit_price": 39.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_028",
+      "customer_id": "cust_004",
+      "order_date": "2024-02-01T04:30:00Z",
+      "status": "delivered",
+      "items": [
+        {
+          "product_id": "prod_010",
+          "quantity": 1,
+          "unit_price": 42.0
+        },
+        {
+          "product_id": "prod_017",
+          "quantity": 2,
+          "unit_price": 79.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_029",
+      "customer_id": "cust_005",
+      "order_date": "2024-02-02",
+      "status": "cancelled",
+      "items": [
+        {
+          "product_id": "prod_013",
+          "quantity": 1,
+          "unit_price": 9.99
+        },
+        {
+          "product_id": "prod_020",
+          "quantity": 2,
+          "unit_price": 27.99
+        },
+        {
+          "product_id": "prod_002",
+          "quantity": 3,
+          "unit_price": 89.95
+        }
+      ]
+    },
+    {
+      "_id": "ord_030",
+      "customer_id": "cust_006",
+      "order_date": "03/02/2024",
+      "status": "pending",
+      "items": [
+        {
+          "product_id": "prod_016",
+          "quantity": 1,
+          "unit_price": 21.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_031",
+      "customer_id": "cust_007",
+      "order_date": 1709294400000,
+      "status": "processing",
+      "items": [
+        {
+          "product_id": "prod_019",
+          "quantity": 1,
+          "unit_price": 199.99
+        },
+        {
+          "product_id": "prod_001",
+          "quantity": 2,
+          "unit_price": 29.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_032",
+      "customer_id": "cust_008",
+      "order_date": "2024-02-05T08:30:00Z",
+      "status": "shipped",
+      "items": [
+        {
+          "product_id": "prod_022",
+          "quantity": 1,
+          "unit_price": 12.99
+        },
+        {
+          "product_id": "prod_004",
+          "quantity": 2,
+          "unit_price": 349.99
+        },
+        {
+          "product_id": "prod_011",
+          "quantity": 3,
+          "unit_price": 34.99
+        }
+      ]
+    },
+    {
+      "_id": "ord_033",
+      "customer_id": "cust_009",
+      "order_date": "2024-02-06",
+      "status": "delivered",
+      "items": [
+        {
+          "product_id": "prod_025",
+          "quantity": 1,
+          "unit_price": 16.5
+        }
+      ]
+    },
+    {
+      "_id": "ord_034",
+      "customer_id": "cust_010",
+      "order_date": "07/02/2024",
+      "status": "cancelled",
+      "items": [
+        {
+          "product_id": "prod_003",
+          "quantity": 1,
+          "unit_price": 15.0
+        },
+        {
+          "product_id": "prod_010",
+          "quantity": 2,
+          "unit_price": 42.0
+        }
+      ]
+    },
+    {
+      "_id": "ord_035",
+      "customer_id": "cust_011",
+      "order_date": 1709467200000,
+      "status": "pending",
+      "items": [
+        {
+          "product_id": "prod_006",
+          "quantity": 1,
+          "unit_price": 129.99
+        },
+        {
+          "product_id": "prod_013",
+          "quantity": 2,
+          "unit_price": 9.99
+        },
+        {
+          "product_id": "prod_020",
+          "quantity": 3,
+          "unit_price": 27.99
+        }
+      ]
+    }
+  ]
+}
