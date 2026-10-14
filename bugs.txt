@@ -1,0 +1,8 @@
+Priority	Gap	Effort
+1	Gap 1: object type	Very small fixed
+2	Gap 2: date formats	Medium fixed
+3	Gap 3: numeric-looking text	Small
+4	Gap 4: categorical rule	Small
+5	Gap 5: uniqueness	Small
+6	Gap 6: presence relative to parent	Medium
+7	Gap 7: foreign keys	Do it in Step 3

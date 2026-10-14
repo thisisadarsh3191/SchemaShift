@@ -7,19 +7,42 @@ import json
 from datetime import datetime
 from typing import Any
 from collections import defaultdict, Counter
+import re
+
+datePatterns = {
+    "isoDate":re.compile(r"\d{4}-\d{2}-\d{2}"),
+    "isoDateTime":re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"),
+    "slashDate":re.compile(r"\d{2}/\d{2}/\d{4}")
+}
+def dateFormat(value)->str|None:
+    if isinstance(value,int):
+        if 946684800000 <= value <= 4102444800000:return "epoch_ms"   # years 2000 to 2100, in milliseconds
+        return None
+    if isinstance(value,str):
+        for formatName,date in datePatterns.items():
+            if date.fullmatch(value):return formatName
+    return None
+
 
 def findType(value)->str:
     if isinstance(value,bool):return "boolean"
     elif isinstance(value, int):return "integer"
-    elif isinstance(value, str):return "string"
+    # elif isinstance(value, str):
+    #     if value.isnumeric():
+    #         return "numeric string"
+    #     return "string"
+    elif isinstance(value,str):return "string"
     elif isinstance(value, datetime):return "date"
     else:return type(value).__name__
 
 def findColumns(value,path:str,notes:dict[str,Any],pathsRead:set[str]):
     if isinstance(value,dict):
+        if path:
+            notes[path]["types"]["object"]+=1
         for fieldName,fieldVal in value.items():
             newPath = f"{path}.{fieldName}" if path else fieldName
             pathsRead.add(newPath)
+            
             findColumns(fieldVal,newPath,notes,pathsRead)
     elif isinstance(value,list):
         if path:
@@ -35,6 +58,13 @@ def findColumns(value,path:str,notes:dict[str,Any],pathsRead:set[str]):
     else:
         if path:
             notes[path]["types"][findType(value)]+=1
+            dateformat = dateFormat(value)
+            if dateformat:
+                notes[path]["dateFormats"][dateformat]+=1
+                if dateformat == "slashDate":
+                    first,second = value.split("/")[:2]
+                    notes[path]["slashMaxFirst"] = max(notes[path]["slashMaxFirst"],int(first))
+                    notes[path]["slashMaxSecond"] = max(notes[path]["slashMaxSecond"],int(second))
         if not notes[path]["limit"]:
             newVal = str(value)if isinstance(value,(list,dict)) else value
             notes[path]["distinct"].add(newVal)
@@ -70,6 +100,20 @@ def report(notes:dict[str,Any],docCount:int)->dict[str,Any]:
                 "maxLen":max(length),
                 "avgLen":round(sum(length)/len(length),2)
             }
+
+        if data["dateFormats"]:
+            dateCount = sum(data["dateFormats"].values())
+            fieldData["dateFormats"] = dict(data["dateFormats"])
+            fieldData["date-like"] = (dateCount/totalType) >= 0.8
+            if data["dateFormats"]["slashDate"]:
+                if data["slashMaxFirst"]>12 and data["slashMaxSecond"]<=12:
+                    fieldData["slashOrder"] = "day-first"
+                elif data["slashMaxSecond"]>12 and data["slashMaxFirst"]<=12:
+                    fieldData["slashOrder"] = "month-first"
+                elif data["slashMaxFirst"]>12 and data["slashMaxSecond"]>12:
+                    fieldData["slashOrder"] = "inconsistent - needs review"
+                else:
+                    fieldData["slashOrder"] = "ambiguous - needs review"
         isCategory = ((not data["limit"]) and (len(data["distinct"])<=10) and (len(data["distinct"])>0))
         if isCategory:
             fieldData["categorical"] = True
@@ -87,7 +131,10 @@ def profileData(db:dict,collectionName:list[str],sampleSize:int = 100):
             "types":Counter(),
             "distinct":set(),
             "limit":False,
-            "listLength":[]
+            "listLength":[],
+            "dateFormats":Counter(),
+            "slashMaxFirst":0,
+            "slashMaxSecond":0
         })
 
         docs = db.get(collection,[])[:sampleSize]
@@ -108,10 +155,13 @@ def profileData(db:dict,collectionName:list[str],sampleSize:int = 100):
     return finalReport
 
 ##main block
-import json
-file = "online_shop_seed_data.json"
-with open(file) as f:
-    data = json.load(f)
-profile = profileData(data,["customers","products","orders"])
-print(len(profile))
-print(profile)
+if __name__ == "__main__":
+    with open("online_shop_seed_data.json") as f:
+        data = json.load(f)
+
+    profile = profileData(data, ["customers", "products", "orders"])
+
+    with open("profile.json", "w") as f:
+        json.dump(profile, f, indent=2)
+
+    print("Profile written to profile.json")
