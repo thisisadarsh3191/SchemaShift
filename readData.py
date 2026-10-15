@@ -9,6 +9,13 @@ from typing import Any
 from collections import defaultdict, Counter
 import re
 
+minVal_forCateg = 30
+max_num_Categ = 10
+categ_ratio = 0.2 #distinct choices/total values - makes it a constraint for categorical values ft.Claude 
+minVal_forUnique = 20 #need this many unique values to be considered a primary key-esque column ft.Claude
+
+
+
 datePatterns = {
     "isoDate":re.compile(r"\d{4}-\d{2}-\d{2}"),
     "isoDateTime":re.compile(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z"),
@@ -22,7 +29,9 @@ def dateFormat(value)->str|None:
         for formatName,date in datePatterns.items():
             if date.fullmatch(value):return formatName
     return None
-
+checkNumRE = re.compile(r"-?[0-9]+(\.[0-9]+)?")
+def checkNumber(numstr:str)->bool:
+    return checkNumRE.fullmatch(numstr) is not None
 
 def findType(value)->str:
     if isinstance(value,bool):return "boolean"
@@ -65,6 +74,15 @@ def findColumns(value,path:str,notes:dict[str,Any],pathsRead:set[str]):
                     first,second = value.split("/")[:2]
                     notes[path]["slashMaxFirst"] = max(notes[path]["slashMaxFirst"],int(first))
                     notes[path]["slashMaxSecond"] = max(notes[path]["slashMaxSecond"],int(second))
+
+
+            if isinstance(value,str):
+                if checkNumber(value):
+                    notes[path]["numericString"] +=1
+                elif len(notes[path]["badStrings"])<5 and value not in notes[path]["badStrings"]:
+                    notes[path]["badStrings"].append(value)
+
+
         if not notes[path]["limit"]:
             newVal = str(value)if isinstance(value,(list,dict)) else value
             notes[path]["distinct"].add(newVal)
@@ -114,10 +132,18 @@ def report(notes:dict[str,Any],docCount:int)->dict[str,Any]:
                     fieldData["slashOrder"] = "inconsistent - needs review"
                 else:
                     fieldData["slashOrder"] = "ambiguous - needs review"
-        isCategory = ((not data["limit"]) and (len(data["distinct"])<=10) and (len(data["distinct"])>0))
+        # isCategory = ((not data["limit"]) and (len(data["distinct"])<=10) and (len(data["distinct"])>0))
+        isCategory = (
+            (not data["limit"])
+            and set(data["types"]) - {None} == {"string"}
+            and data["types"]["string"]>= minVal_forCateg
+            and len(data["distinct"]) <= max_num_Categ
+            and len(data["distinct"])>0
+            and len(data["distinct"])/(data["types"]["string"]) <= categ_ratio
+        )
         if isCategory:
             fieldData["categorical"] = True
-            fieldData["distinct"] = list(data["distinct"])
+            fieldData["distinct"] = sorted(data["distinct"],key=str)#shows a uniform list everytime for same data ft.Claude
         else:
             fieldData["categorical"] = False
         report[path] = fieldData
@@ -134,7 +160,9 @@ def profileData(db:dict,collectionName:list[str],sampleSize:int = 100):
             "listLength":[],
             "dateFormats":Counter(),
             "slashMaxFirst":0,
-            "slashMaxSecond":0
+            "slashMaxSecond":0,
+            "numericString":0,
+            "badStrings":[]
         })
 
         docs = db.get(collection,[])[:sampleSize]
