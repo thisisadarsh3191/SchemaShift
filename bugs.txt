@@ -1,8 +1,18 @@
-Priority	Gap	Effort
-1	Gap 1: object type	Very small fixed
-2	Gap 2: date formats	Medium fixed
-3	Gap 3: numeric-looking text	Small fixed
-4	Gap 4: categorical rule	Small fixed
-5	Gap 5: uniqueness	Small
-6	Gap 6: presence relative to parent	Medium
-7	Gap 7: foreign keys	Do it in Step 3
+Priority	Gap	                                Effort          status
+1	        Gap 1: object type	                Very small      fixed
+2	        Gap 2: date formats	                Medium          fixed
+3	        Gap 3: numeric-looking text	        Small           fixed
+4	        Gap 4: categorical rule	            Small           fixed
+5	        Gap 5: uniqueness	                Small           fixed
+6	        Gap 6: presence relative to parent	Medium          fixed
+
+Key names are now inconsistent in style: Presence Percentage and Docs with field use capitals and spaces, 
+while parentPath, distinctCount, and numericStrings use camelCase. It works, but it’s easy to mistype later. 
+Either leave it and copy the exact names, or tidy them up once in a single pass.
+Still untested: the seed data has no null values and no true/false values, so those code paths in the profiler 
+have never run on real data. Adding a few of each 
+(plus one order pointing to a customer that doesn’t exist, and a couple of real ObjectIds) 
+will test them, and will give Gap 7 and the confidence gate something real to catch. 
+After editing the seed file, rerun and check that the existing numbers stay the same except for the new fields.
+
+7	        Gap 7: foreign keys	                Do it in Step 3

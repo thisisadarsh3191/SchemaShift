@@ -78,7 +78,7 @@ def findColumns(value,path:str,notes:dict[str,Any],pathsRead:set[str]):
 
             if isinstance(value,str):
                 if checkNumber(value):
-                    notes[path]["numericString"] +=1
+                    notes[path]["numericStrings"] +=1
                 elif len(notes[path]["badStrings"])<5 and value not in notes[path]["badStrings"]:
                     notes[path]["badStrings"].append(value)
 
@@ -86,7 +86,7 @@ def findColumns(value,path:str,notes:dict[str,Any],pathsRead:set[str]):
         if not notes[path]["limit"]:
             newVal = str(value)if isinstance(value,(list,dict)) else value
             notes[path]["distinct"].add(newVal)
-            if len(notes[path]["distinct"])>50:
+            if len(notes[path]["distinct"])>1000:
                 notes[path]["limit"] = True
                 notes[path]["distinct"].clear()
 
@@ -111,6 +111,19 @@ def report(notes:dict[str,Any],docCount:int)->dict[str,Any]:
             "mixed types":isTypesMixed
         }
 
+        if path.endswith("[]"):
+            parentPath = path[:-2]
+        elif "." in path:
+            parentPath = path.partition(".")[0]
+        else:parentPath = ""
+
+        if parentPath:
+            parentDocCount = notes[parentPath]["doccount"] if parentPath in notes else docCount
+            fieldData["parentPath"] = parentPath
+            fieldData["Presence relative to parent"] = (
+                round((docsWithField/parentDocCount)*100,2) if parentDocCount>0 else 0.0
+            )
+
         if data["listLength"]:
             length = data["listLength"]
             fieldData["listData"] = {
@@ -132,6 +145,30 @@ def report(notes:dict[str,Any],docCount:int)->dict[str,Any]:
                     fieldData["slashOrder"] = "inconsistent - needs review"
                 else:
                     fieldData["slashOrder"] = "ambiguous - needs review"
+
+        scalarValues = sum(i for name,i in data["types"].items() if name not in ("list","object","None"))
+        if scalarValues:
+            if data["limit"]:
+                fieldData["uniqueness"] = "unknown -too many values to track"
+            else:
+                fieldData["distinctCount"] = len(data["distinct"])
+                if scalarValues<minVal_forUnique:
+                    fieldData["uniqueness"] = "Unknown - lower than minimum number of values"
+                elif fieldData["distinctCount"] == scalarValues:
+                    fieldData["uniqueness"] = "unique"
+                else:
+                    fieldData["uniqueness"] = "contains duplicates"
+        
+        if data["numericStrings"]:
+            fieldData["numericStrings"] = data["numericStrings"]
+        numbers = data["types"]["integer"] + data["types"]["float"]
+        if numbers and data["types"]["string"] and not fieldData.get("date-like"):
+            if data["numericStrings"] == data["types"]["string"]:
+                fieldData["numberConversion"] = "convertible"
+            else:
+                fieldData["numberConversion"] = "needs review"
+                fieldData["unconvertibleExamples"] = data["badStrings"]
+
         # isCategory = ((not data["limit"]) and (len(data["distinct"])<=10) and (len(data["distinct"])>0))
         isCategory = (
             (not data["limit"])
@@ -161,7 +198,7 @@ def profileData(db:dict,collectionName:list[str],sampleSize:int = 100):
             "dateFormats":Counter(),
             "slashMaxFirst":0,
             "slashMaxSecond":0,
-            "numericString":0,
+            "numericStrings":0,
             "badStrings":[]
         })
 
