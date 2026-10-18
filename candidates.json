@@ -1,0 +1,484 @@
+{
+    "tables": [
+        {
+            "name": "customers",
+            "source": "customers",
+            "rule": "top-level collection becomes a table",
+            "evidence": "25 sampled documents",
+            "confidence": "high"
+        },
+        {
+            "name": "customer_phone_number",
+            "source": "customers.phone_numbers[]",
+            "rule": "list of plain values becomes child table",
+            "evidence": "Presence: 92.0%; types:list - 100.0%; element types {'string': 100.0}",
+            "confidence": "high"
+        },
+        {
+            "name": "products",
+            "source": "products",
+            "rule": "top-level collection becomes a table",
+            "evidence": "25 sampled documents",
+            "confidence": "high"
+        },
+        {
+            "name": "product_tag",
+            "source": "products.tags[]",
+            "rule": "list of plain values becomes child table",
+            "evidence": "Presence: 100.0%; types:list - 100.0%; element types {'string': 100.0}",
+            "confidence": "high"
+        },
+        {
+            "name": "orders",
+            "source": "orders",
+            "rule": "top-level collection becomes a table",
+            "evidence": "35 sampled documents",
+            "confidence": "high"
+        },
+        {
+            "name": "order_item",
+            "source": "orders.items[]",
+            "rule": "list of objects becomes child table",
+            "evidence": "Presence: 100.0%; types:list - 100.0%; element types {'object': 100.0}",
+            "confidence": "high"
+        }
+    ],
+    "columns": [
+        {
+            "table": "customers",
+            "name": "_id",
+            "source": "customers._id",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "customers",
+            "name": "name",
+            "source": "customers.name",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "customers",
+            "name": "email",
+            "source": "customers.email",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "customers",
+            "name": "signup_date",
+            "source": "customers.signup_date",
+            "sql_type": "TIMESTAMP",
+            "required": true,
+            "rule": "date-like field maps to TIMESTAMP",
+            "evidence": "Presence: 100.0%; types:string - 76.0%, integer - 24.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "customers",
+            "name": "address_street",
+            "source": "customers.address.street",
+            "sql_type": "TEXT",
+            "required": false,
+            "rule": "flatten scalar object; string maps to TEXT",
+            "evidence": "Presence: 92.0%; types:string - 100.0%; parent presence 92%",
+            "confidence": "high"
+        },
+        {
+            "table": "customers",
+            "name": "address_city",
+            "source": "customers.address.city",
+            "sql_type": "TEXT",
+            "required": false,
+            "rule": "flatten scalar object; string maps to TEXT",
+            "evidence": "Presence: 92.0%; types:string - 100.0%; parent presence 92%",
+            "confidence": "high"
+        },
+        {
+            "table": "customers",
+            "name": "address_pincode",
+            "source": "customers.address.pincode",
+            "sql_type": "TEXT",
+            "required": false,
+            "rule": "flatten scalar object; string maps to TEXT",
+            "evidence": "Presence: 92.0%; types:string - 100.0%; parent presence 92%",
+            "confidence": "high"
+        },
+        {
+            "table": "products",
+            "name": "_id",
+            "source": "products._id",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "products",
+            "name": "name",
+            "source": "products.name",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "products",
+            "name": "price",
+            "source": "products.price",
+            "sql_type": "NUMERIC",
+            "required": true,
+            "rule": "convertible numeric/text values use numeric type",
+            "evidence": "Presence: 100.0%; types:float - 92.0%, string - 8.0%",
+            "confidence": "medium"
+        },
+        {
+            "table": "orders",
+            "name": "_id",
+            "source": "orders._id",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "orders",
+            "name": "customer_id",
+            "source": "orders.customer_id",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "orders",
+            "name": "order_date",
+            "source": "orders.order_date",
+            "sql_type": "TIMESTAMP",
+            "required": true,
+            "rule": "date-like field maps to TIMESTAMP",
+            "evidence": "Presence: 100.0%; types:string - 74.29%, integer - 25.71%",
+            "confidence": "high"
+        },
+        {
+            "table": "orders",
+            "name": "status",
+            "source": "orders.status",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "customer_phone_number",
+            "name": "id",
+            "source": "phone_numbers[]",
+            "sql_type": "INTEGER",
+            "required": true,
+            "rule": "generated child-table primary key",
+            "evidence": "array elements have no _id",
+            "confidence": "high"
+        },
+        {
+            "table": "customer_phone_number",
+            "name": "customer_id",
+            "source": "customers._id",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "child-to-parent link",
+            "evidence": "one row per list element",
+            "confidence": "high"
+        },
+        {
+            "table": "customer_phone_number",
+            "name": "phone_number",
+            "source": "customers.phone_numbers[]",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "one row per list value; string maps to TEXT",
+            "evidence": "Presence: 88.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "product_tag",
+            "name": "id",
+            "source": "tags[]",
+            "sql_type": "INTEGER",
+            "required": true,
+            "rule": "generated child-table primary key",
+            "evidence": "array elements have no _id",
+            "confidence": "high"
+        },
+        {
+            "table": "product_tag",
+            "name": "product_id",
+            "source": "products._id",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "child-to-parent link",
+            "evidence": "one row per list element",
+            "confidence": "high"
+        },
+        {
+            "table": "product_tag",
+            "name": "tag",
+            "source": "products.tags[]",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "one row per list value; string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "order_item",
+            "name": "id",
+            "source": "items[]",
+            "sql_type": "INTEGER",
+            "required": true,
+            "rule": "generated child-table primary key",
+            "evidence": "array elements have no _id",
+            "confidence": "high"
+        },
+        {
+            "table": "order_item",
+            "name": "order_id",
+            "source": "orders._id",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "child-to-parent link",
+            "evidence": "one row per list element",
+            "confidence": "high"
+        },
+        {
+            "table": "order_item",
+            "name": "product_id",
+            "source": "orders.items[].product_id",
+            "sql_type": "TEXT",
+            "required": true,
+            "rule": "string maps to TEXT",
+            "evidence": "Presence: 100.0%; types:string - 100.0%; list-element presence 100%",
+            "confidence": "high"
+        },
+        {
+            "table": "order_item",
+            "name": "quantity",
+            "source": "orders.items[].quantity",
+            "sql_type": "INTEGER",
+            "required": true,
+            "rule": "integer maps to INTEGER",
+            "evidence": "Presence: 100.0%; types:integer - 100.0%; list-element presence 100%",
+            "confidence": "high"
+        },
+        {
+            "table": "order_item",
+            "name": "unit_price",
+            "source": "orders.items[].unit_price",
+            "sql_type": "NUMERIC",
+            "required": true,
+            "rule": "float maps to NUMERIC",
+            "evidence": "Presence: 100.0%; types:float - 100.0%; list-element presence 100%",
+            "confidence": "high"
+        }
+    ],
+    "keys": [
+        {
+            "table": "customers",
+            "column": "_id",
+            "kind": "primary",
+            "references": null,
+            "source": "customers._id",
+            "rule": "_id is primary key",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "products",
+            "column": "_id",
+            "kind": "primary",
+            "references": null,
+            "source": "products._id",
+            "rule": "_id is primary key",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "orders",
+            "column": "_id",
+            "kind": "primary",
+            "references": null,
+            "source": "orders._id",
+            "rule": "_id is primary key",
+            "evidence": "Presence: 100.0%; types:string - 100.0%",
+            "confidence": "high"
+        },
+        {
+            "table": "customer_phone_number",
+            "column": "customer_id",
+            "kind": "foreign",
+            "references": "customers._id",
+            "source": "customers._id",
+            "rule": "child foreign key to parent",
+            "evidence": "each child row belongs to one parent",
+            "confidence": "high"
+        },
+        {
+            "table": "customer_phone_number",
+            "column": "id",
+            "kind": "primary",
+            "references": null,
+            "source": "phone_numbers[]",
+            "rule": "generated child primary key",
+            "evidence": "array elements have no _id",
+            "confidence": "high"
+        },
+        {
+            "table": "product_tag",
+            "column": "product_id",
+            "kind": "foreign",
+            "references": "products._id",
+            "source": "products._id",
+            "rule": "child foreign key to parent",
+            "evidence": "each child row belongs to one parent",
+            "confidence": "high"
+        },
+        {
+            "table": "product_tag",
+            "column": "id",
+            "kind": "primary",
+            "references": null,
+            "source": "tags[]",
+            "rule": "generated child primary key",
+            "evidence": "array elements have no _id",
+            "confidence": "high"
+        },
+        {
+            "table": "order_item",
+            "column": "order_id",
+            "kind": "foreign",
+            "references": "orders._id",
+            "source": "orders._id",
+            "rule": "child foreign key to parent",
+            "evidence": "each child row belongs to one parent",
+            "confidence": "high"
+        },
+        {
+            "table": "order_item",
+            "column": "id",
+            "kind": "primary",
+            "references": null,
+            "source": "items[]",
+            "rule": "generated child primary key",
+            "evidence": "array elements have no _id",
+            "confidence": "high"
+        }
+    ],
+    "indexes": [
+        {
+            "table": "customers",
+            "column": "_id",
+            "kind": "unique",
+            "rule": "primary-key index",
+            "evidence": "primary key",
+            "confidence": "high"
+        },
+        {
+            "table": "customers",
+            "column": "email",
+            "kind": "unique",
+            "source": "customers.email",
+            "rule": "name clue and profile uniqueness",
+            "evidence": "unique; 25 distinct values",
+            "confidence": "high"
+        },
+        {
+            "table": "products",
+            "column": "_id",
+            "kind": "unique",
+            "rule": "primary-key index",
+            "evidence": "primary key",
+            "confidence": "high"
+        },
+        {
+            "table": "orders",
+            "column": "_id",
+            "kind": "unique",
+            "rule": "primary-key index",
+            "evidence": "primary key",
+            "confidence": "high"
+        },
+        {
+            "table": "customer_phone_number",
+            "column": "customer_id",
+            "kind": "regular",
+            "rule": "index foreign-key columns",
+            "evidence": "child-to-parent FK",
+            "confidence": "high"
+        },
+        {
+            "table": "customer_phone_number",
+            "column": "id",
+            "kind": "unique",
+            "rule": "primary-key index",
+            "evidence": "generated primary key",
+            "confidence": "high"
+        },
+        {
+            "table": "product_tag",
+            "column": "product_id",
+            "kind": "regular",
+            "rule": "index foreign-key columns",
+            "evidence": "child-to-parent FK",
+            "confidence": "high"
+        },
+        {
+            "table": "product_tag",
+            "column": "id",
+            "kind": "unique",
+            "rule": "primary-key index",
+            "evidence": "generated primary key",
+            "confidence": "high"
+        },
+        {
+            "table": "order_item",
+            "column": "order_id",
+            "kind": "regular",
+            "rule": "index foreign-key columns",
+            "evidence": "child-to-parent FK",
+            "confidence": "high"
+        },
+        {
+            "table": "order_item",
+            "column": "id",
+            "kind": "unique",
+            "rule": "primary-key index",
+            "evidence": "generated primary key",
+            "confidence": "high"
+        }
+    ],
+    "relations": [],
+    "skipped": [
+        {
+            "source": "orders.customer_id",
+            "reason": "does not meet min. of 90% coverage. Coverage:100.00"
+        },
+        {
+            "source": "orders.items[].product_id",
+            "reason": "does not meet min. of 90% coverage. Coverage:100.00"
+        }
+    ]
+}

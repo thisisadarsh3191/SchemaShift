@@ -16,3 +16,172 @@ will test them, and will give Gap 7 and the confidence gate something real to ca
 After editing the seed file, rerun and check that the existing numbers stay the same except for the new fields.
 
 7	        Gap 7: foreign keys	                Do it in Step 3
+
+# Job 1 in detail: Look at the old data and make a plan
+
+## What Job 1 produces
+
+By the end, you will have:
+1. A small MongoDB with fake, nested data.
+2. A program that studies that data and writes down what it found.
+3. A proposed list of SQL tables, columns, keys, and indexes.
+4. A saved **frozen schema map** file (after approval).
+
+Job 2 (scoring) and Job 3 (script writing) both depend on this file, so it is the foundation of everything.
+
+## Step 1: Create the fake data
+
+You need a tiny MongoDB with data that is "nested enough" to be interesting but small enough to manage. Three collections is a good size.
+
+**Example idea: a small online shop**
+
+- **customers**: each has a name, email, signup date, an `address` object (street, city, pincode), and a list of `phone_numbers`.
+- **products**: each has a name, price, and a list of `tags`.
+- **orders**: each has a reference to a customer, an order date, a status, and a list of `items`. Each item has a product reference, quantity, and price.
+
+**Why this works:** it contains every tricky pattern the project wants you to handle:
+- An **object inside an object** (the address).
+- A **list of simple values** (phone numbers, tags).
+- A **list of objects** (order items).
+- **References between collections** (an order points to a customer and to products).
+- A many-to-many link (orders and products, through items).
+
+**Make it realistically messy.** Real data is never perfect, so add a few imperfections on purpose:
+- Some customers have no phone number.
+- A couple of documents are missing the address.
+- One price stored as text instead of a number.
+- A few dates stored in different formats.
+
+This gives your type statistics something real to catch. Aim for around 20 to 50 documents per collection. Don't build hundreds.
+
+## Step 2: Sampling (the rules-based part)
+
+**The idea:** you don't need to read every document to understand the shape. You read a sample and note what you see. For a tiny dataset, you can just read all of it.
+
+For each collection, your program should walk through the documents and record, for **every field**:
+
+- **How often it appears.** "`email` is in 100% of customers; `address` is in 92%." Fields that always appear are likely required columns. Fields that sometimes appear are likely optional (allow empty).
+- **Which types it holds.** "`price` is a number in 98% and text in 2%." If there is a mix, you need a conversion decision.
+- **For nested fields, the same thing one level down.** Treat `address.city` as its own field with its own stats.
+- **For lists, how long they usually are, and what is inside.** "`items` has 1 to 6 entries, each an object."
+- **How many distinct values.** If a field like `status` has only 4 different values across 500 documents, that is a hint it's a category (it may deserve a small lookup table or a constrained column).
+
+**Output of this step:** a "profile" report: a plain structured file (JSON is fine) listing every collection and every field with its stats. No decisions yet, only observations.
+
+## Step 3: Rule-based candidates (still deterministic)
+
+Now you turn the observations into **candidate decisions** using simple if-then rules that you write. Examples of rules:
+
+**Primary keys**
+- If a field is named `_id`, it's the primary key of that table.
+
+**Foreign keys (references)**
+- If a field's name ends in `_id` or `Id` (like `customer_id`) and its values look like another collection's IDs, it's probably a reference.
+- Stronger evidence: check that the values actually exist in the other collection. If 100% of `orders.customer_id` values appear in `customers._id`, it's almost certainly a foreign key. If only 60% match, flag it as uncertain.
+
+**Nested object rules**
+- A nested object that appears at most once per document (like `address`) is a candidate to **flatten into columns** on the parent (`address_street`, `address_city`, ...) or to split into a separate one-to-one table.
+
+**List rules**
+- A list of **simple values** (phone numbers, tags) becomes a **child table** with a link back to the parent. For example, a `customer_phones` table holding one phone per row.
+- A list of **objects** (order items) becomes a **child table** with its own columns plus a foreign key to the parent.
+- If both sides of a relationship are lists or references to each other (orders ↔ products), you need a **join table**.
+
+**Type rules**
+- Decide a standard conversion table. For example: text → `TEXT`/`VARCHAR`, whole number → `INTEGER`, decimal → `NUMERIC`, true/false → `BOOLEAN`, date → `TIMESTAMP`, MongoDB ObjectId → text or UUID. Mixed types fall back to the most general safe option, and the field is flagged.
+
+**Index rules**
+- Primary keys and foreign keys get indexes. Anything else (like a frequently searched `email`) can be added by simple rules, such as "fields that look unique get a unique index."
+
+**Output of this step:** a list of **candidates**, each with the rule that produced it. For example: "`orders.items` → child table `order_items` (rule: list of objects)." Recording the rule that fired matters, because the brief wants reproducibility and your README needs to justify choices.
+
+## Step 4: The AI assist (the small, non-deterministic part)
+
+The AI gets the **rule-based candidates and stats** and is asked for three kinds of help:
+
+1. **Naming.** Suggest clean SQL names (`customer_phones` instead of `phone_numbers_list`), following conventions like lowercase with underscores.
+2. **Relations.** Point out references your rules might have missed or doubted. ("`ref_user` probably points to `customers`.")
+3. **Embed vs. separate table.** For ambiguous nested data, suggest "flatten this" or "make a table for this," with a short reason.
+
+**Important boundaries:**
+- The AI sees the stats, not necessarily all the raw data. Less data is safer and cheaper.
+- Ask for **structured output** (a fixed format you can read with code), not free-form paragraphs.
+- Treat every AI answer as a **suggestion**, never a decision. It goes into the proposal alongside the rule-based result, clearly marked as "AI suggested."
+- If the AI is unavailable, your program should still produce a valid plan from rules alone. That is what "deterministic first" means.
+
+## Step 5: Build the proposed schema
+
+Combine the rule-based candidates with accepted AI suggestions into a **proposed relational schema** containing:
+
+- **Tables** (with names)
+- **Columns** (with SQL types, and whether empty values are allowed)
+- **Primary keys**
+- **Foreign keys** (which column points to which table)
+- **Indexes**
+
+Also record, for every item, its **origin**: came from a rule, or came from the AI, plus a confidence indication. This feeds directly into Job 2's match percentage.
+
+**Make it readable.** Show the proposal as a clean JSON/YAML file, and also as a simple printout in the terminal (like a list of tables and their columns). The brief says reviewers must be able to read it easily.
+
+## Step 6: The gate, then freezing
+
+This is the key control point:
+
+1. Job 2 scores the proposal (that is the next job).
+2. Anything **above your confidence threshold** passes automatically.
+3. Anything **below the threshold** is shown to a human, who approves it, edits it, or rejects it.
+4. Only when everything is approved does the program write the **frozen schema map**: a file that records the final decisions (every collection-to-table and field-to-column mapping, types, keys, indexes).
+
+**After freezing:**
+- Job 3 (scripts), Job 4 (loading), and Job 5 (ORM) all read **only this file**.
+- If something later turns out to be wrong, the fix is: change the map, re-approve, re-freeze, regenerate. Never patch things by hand downstream.
+
+Tip: make the file include a version or timestamp, and keep any mapping overrides (like "rename this table") in your **config file**, as the brief suggests.
+
+## A walk-through with the shop example
+
+1. **Seed:** customers (with address and phones), products (with tags), orders (with items).
+2. **Sampling finds:** `address` appears in 92% of customers. `price` is a number 98% of the time and text 2%. `items` is a list of objects. `customer_id` in orders matches real customer IDs 100% of the time.
+3. **Rules decide:**
+   - `customers._id` → primary key
+   - `address` → flatten into columns (city, street, pincode)
+   - `phone_numbers` → child table
+   - `orders.customer_id` → foreign key to customers
+   - `items` → child table `order_items` with foreign keys to orders and products
+   - `price` → decimal type, but flagged because of the text values
+4. **AI suggests:** friendlier names, and confirms `items.product_id` points to products.
+5. **Proposed schema:** roughly 6 tables: `customers`, `customer_phones`, `products`, `product_tags`, `orders`, `order_items`.
+6. **Gate:** the flagged `price` column is below the threshold, so a human confirms the conversion.
+7. **Freeze:** the final map is saved.
+
+## What the README should say about Job 1
+
+For this layer, write a short justification covering:
+- **Deterministic:** sampling, type statistics, rule-based keys and nested-data rules.
+- **Non-deterministic:** AI naming, relation hints, and embed-vs-table suggestions.
+- **Why:** structure and types are facts that must be reproducible. Naming and fuzzy relationships are judgment calls where an AI helps.
+- **Safety gate:** the confidence threshold and human approval before freezing.
+- **Match-%:** link to the report from Job 2.
+
+## Common beginner mistakes to avoid
+
+- **Making the seed data too big or too clean.** Small and slightly messy is best.
+- **Letting the AI make final decisions.** It only suggests.
+- **Skipping the "which rule produced this" record.** You'll want it for the README and for explaining low scores.
+- **Forgetting empty/missing values.** Real data always has them.
+- **Not documenting the nested-data strategy.** The brief explicitly asks for it. Write the rules in a simple list as you decide them.
+- **Overbuilding.** Don't try to handle every possible MongoDB pattern. Handle the ones in your seed data well.
+
+## Suggested time and a checklist
+
+**Time:** about 2.5 days (Oct 11 to 13 in the schedule).
+
+**Done when:**
+- [ ] MongoDB has about 3 nested collections with a few deliberate imperfections
+- [ ] A field-by-field profile report exists
+- [ ] The rules for keys, references, nested objects, lists, and types are written down and implemented
+- [ ] The AI returns structured suggestions that are clearly labeled and optional
+- [ ] A readable proposed schema exists, with an origin and confidence for every item
+- [ ] A frozen schema map file can be produced after the approval gate
+
+Would you like me to go through the nested-data rules with more examples next, or move on to Job 2 (the match percentage)?

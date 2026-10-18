@@ -1,0 +1,357 @@
+{
+  "customers": {
+    "Total docs sampled": 25,
+    "Fields": {
+      "_id": {
+        "Docs with field": 25,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "distinctCount": 25,
+        "uniqueness": "unique",
+        "categorical": false
+      },
+      "name": {
+        "Docs with field": 25,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "distinctCount": 25,
+        "uniqueness": "unique",
+        "categorical": false
+      },
+      "email": {
+        "Docs with field": 25,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "distinctCount": 25,
+        "uniqueness": "unique",
+        "categorical": false
+      },
+      "signup_date": {
+        "Docs with field": 25,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 76.0,
+          "integer": 24.0
+        },
+        "mixed types": true,
+        "dateFormats": {
+          "isoDate": 7,
+          "slashDate": 6,
+          "epoch_ms": 6,
+          "isoDateTime": 6
+        },
+        "date-like": true,
+        "slashOrder": "day-first",
+        "distinctCount": 25,
+        "uniqueness": "unique",
+        "categorical": false
+      },
+      "address": {
+        "Docs with field": 23,
+        "Presence Percentage": 92.0,
+        "Presence Status": "not always present",
+        "Types": {
+          "object": 100.0
+        },
+        "mixed types": false,
+        "categorical": false
+      },
+      "address.street": {
+        "Docs with field": 23,
+        "Presence Percentage": 92.0,
+        "Presence Status": "not always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "parentPath": "address",
+        "Presence relative to parent": 100.0,
+        "distinctCount": 23,
+        "uniqueness": "unique",
+        "categorical": false
+      },
+      "address.city": {
+        "Docs with field": 23,
+        "Presence Percentage": 92.0,
+        "Presence Status": "not always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "parentPath": "address",
+        "Presence relative to parent": 100.0,
+        "distinctCount": 8,
+        "uniqueness": "contains duplicates",
+        "categorical": false
+      },
+      "address.pincode": {
+        "Docs with field": 23,
+        "Presence Percentage": 92.0,
+        "Presence Status": "not always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "parentPath": "address",
+        "Presence relative to parent": 100.0,
+        "distinctCount": 23,
+        "uniqueness": "unique",
+        "numericStrings": 23,
+        "categorical": false
+      },
+      "phone_numbers": {
+        "Docs with field": 23,
+        "Presence Percentage": 92.0,
+        "Presence Status": "not always present",
+        "Types": {
+          "list": 100.0
+        },
+        "mixed types": false,
+        "listData": {
+          "minLen": 0,
+          "maxLen": 2,
+          "avgLen": 1.48
+        },
+        "categorical": false
+      },
+      "phone_numbers[]": {
+        "Docs with field": 22,
+        "Presence Percentage": 88.0,
+        "Presence Status": "not always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "parentPath": "phone_numbers",
+        "Presence relative to parent": 95.65,
+        "distinctCount": 34,
+        "uniqueness": "unique",
+        "categorical": false
+      }
+    }
+  },
+  "products": {
+    "Total docs sampled": 25,
+    "Fields": {
+      "_id": {
+        "Docs with field": 25,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "distinctCount": 25,
+        "uniqueness": "unique",
+        "categorical": false
+      },
+      "name": {
+        "Docs with field": 25,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "distinctCount": 25,
+        "uniqueness": "unique",
+        "categorical": false
+      },
+      "price": {
+        "Docs with field": 25,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "float": 92.0,
+          "string": 8.0
+        },
+        "mixed types": true,
+        "distinctCount": 25,
+        "uniqueness": "unique",
+        "numericStrings": 2,
+        "numberConversion": "convertible",
+        "categorical": false
+      },
+      "tags": {
+        "Docs with field": 25,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "list": 100.0
+        },
+        "mixed types": false,
+        "listData": {
+          "minLen": 2,
+          "maxLen": 3,
+          "avgLen": 2.12
+        },
+        "categorical": false
+      },
+      "tags[]": {
+        "Docs with field": 25,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "parentPath": "tags",
+        "Presence relative to parent": 100.0,
+        "distinctCount": 23,
+        "uniqueness": "contains duplicates",
+        "categorical": false
+      }
+    }
+  },
+  "orders": {
+    "Total docs sampled": 35,
+    "Fields": {
+      "_id": {
+        "Docs with field": 35,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "distinctCount": 35,
+        "uniqueness": "unique",
+        "categorical": false
+      },
+      "customer_id": {
+        "Docs with field": 35,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "distinctCount": 25,
+        "uniqueness": "contains duplicates",
+        "categorical": false
+      },
+      "order_date": {
+        "Docs with field": 35,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 74.29,
+          "integer": 25.71
+        },
+        "mixed types": true,
+        "dateFormats": {
+          "isoDate": 9,
+          "slashDate": 9,
+          "epoch_ms": 9,
+          "isoDateTime": 8
+        },
+        "date-like": true,
+        "slashOrder": "day-first",
+        "distinctCount": 31,
+        "uniqueness": "contains duplicates",
+        "categorical": false
+      },
+      "status": {
+        "Docs with field": 35,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "distinctCount": 5,
+        "uniqueness": "contains duplicates",
+        "categorical": true,
+        "distinct": [
+          "cancelled",
+          "delivered",
+          "pending",
+          "processing",
+          "shipped"
+        ]
+      },
+      "items": {
+        "Docs with field": 35,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "list": 100.0
+        },
+        "mixed types": false,
+        "listData": {
+          "minLen": 1,
+          "maxLen": 3,
+          "avgLen": 2.03
+        },
+        "categorical": false
+      },
+      "items[]": {
+        "Docs with field": 35,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "object": 100.0
+        },
+        "mixed types": false,
+        "parentPath": "items",
+        "Presence relative to parent": 100.0,
+        "categorical": false
+      },
+      "items[].product_id": {
+        "Docs with field": 35,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "string": 100.0
+        },
+        "mixed types": false,
+        "parentPath": "items[]",
+        "Presence relative to parent": 100.0,
+        "distinctCount": 25,
+        "uniqueness": "contains duplicates",
+        "categorical": false
+      },
+      "items[].quantity": {
+        "Docs with field": 35,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "integer": 100.0
+        },
+        "mixed types": false,
+        "parentPath": "items[]",
+        "Presence relative to parent": 100.0,
+        "distinctCount": 3,
+        "uniqueness": "contains duplicates",
+        "categorical": false
+      },
+      "items[].unit_price": {
+        "Docs with field": 35,
+        "Presence Percentage": 100.0,
+        "Presence Status": "always present",
+        "Types": {
+          "float": 100.0
+        },
+        "mixed types": false,
+        "parentPath": "items[]",
+        "Presence relative to parent": 100.0,
+        "distinctCount": 25,
+        "uniqueness": "contains duplicates",
+        "categorical": false
+      }
+    }
+  }
+}
