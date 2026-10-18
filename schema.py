@@ -1,10 +1,14 @@
 import json
 from typing import Any,Iterable,Generator
 
-def singular(name:str)->str:
-    if name.endswith('ies'):
-        return name[:-3]+'y'
-    return name[:-1] if name.endswith("s") and not name.endswith('ss') else name
+def singular(name: str) -> str:
+    if name.endswith("ies"):
+        return name[:-3] + "y"
+    if name.endswith(("sses", "xes", "ches", "shes")):
+        return name[:-2]
+    if name.endswith("s") and not name.endswith(("ss", "us")):
+        return name[:-1]
+    return name
 
 def childTableNaming(collection:str,field:str)->str:
     return f"{singular(collection)}_{singular(field)}"
@@ -17,7 +21,7 @@ def findChildObjects(value:Any,parts:list[str])->Generator[Any,None,None]:
     if not parts:
         yield value
         return
-    current,remParts = parts,parts[1:]
+    current,remParts = parts[0],parts[1:]
 
     if current == '[]':
         if isinstance(value,Iterable) and not isinstance(value,(str,bytes,dict)):
@@ -45,6 +49,10 @@ def diagnostic(field:dict[str,Any])->str:
 def toSQLType(field: dict[str, Any]) -> tuple[str, str, str]:
     #returns (sqldatatype,explanation,confidence)
     types = field.get("Types", {})
+
+    if set(types)<= {"null"}:
+        return "TEXT","no non-null values seen; type unknown", "low"
+    
     if field.get("date-like"):
         return "TIMESTAMP", "date-like field maps to TIMESTAMP", "high"
     if field.get("mixed types"):
@@ -63,8 +71,10 @@ def toSQLType(field: dict[str, Any]) -> tuple[str, str, str]:
 def checkPrimaryKey(field:dict[str,Any])->bool:
     return field.get("Presence Percentage",0) == 100.0
 
+
 def generateSchema(profile:dict[str,Any],seedData:dict[str,Any]) ->dict[str,Any]:
-    tables,columns,keys,indexes,relations = []
+    tables,columns,keys,indexes,relations = [],[],[],[],[]
+    skipped = []
     fields_by_collection = {name:data.get("Fields",{}) for name,data in profile.items()}
     children = []
 
@@ -82,7 +92,7 @@ def generateSchema(profile:dict[str,Any],seedData:dict[str,Any]) ->dict[str,Any]
             element_path = path + "[]"
             element = fields.get(element_path, {})
             is_object = "object" in element.get("Types", {})
-            child = {"table": findChildObjects(collection, path), "parent": collection,
+            child = {"table": childTableNaming(collection, path), "parent": collection,
                     "list_path": path, "element_path": element_path, "object_list": is_object}
             children.append(child)
             tables.append({"name": child["table"], "source": f"{collection}.{element_path}",
@@ -109,13 +119,20 @@ def generateSchema(profile:dict[str,Any],seedData:dict[str,Any]) ->dict[str,Any]
                         {"object","list"} & set(f.get("Types",{})) #checks if the type of object is either object or list and removes them
                     )
                 ]
+                leafPaths = {p for p,leaf in leaves}
+                for p in fields:
+                    if p.startswith(path+".") and p not in leafPaths:
+                        skipped.append({
+                            "source":f"{collection}.{p}",
+                            "reason":"nested inside one level deep"
+                        })
                 for leafPath, leaf in leaves:
                     typeSQL,rule,confidence = toSQLType(leaf)
                     columns.append({
                         "table": collection,
                         "name": leafPath.replace(".", "_"),
                         "source": f"{collection}.{leafPath}",
-                        "typeSQL": typeSQL,
+                        "sql_type": typeSQL,
                         "required": checkPrimaryKey(field) and checkPrimaryKey(leaf),
                         "rule": f"flatten scalar object; {rule}",
                         "evidence": f"{diagnostic(leaf)}; parent presence {field.get('Presence Percentage', 0):g}%",
@@ -141,7 +158,7 @@ def generateSchema(profile:dict[str,Any],seedData:dict[str,Any]) ->dict[str,Any]
             {"table": table, "name": "id", "source": child["element_path"], "sql_type": "INTEGER",
             "required": True, "rule": "generated child-table primary key",
             "evidence": "array elements have no _id", "confidence": "high"},
-            {"table": table, "name": parent_column, "source": f"{parent}._id", "sql_type": "TEXT",
+            {"table": table, "name": parent_column, "source": f"{parent}._id", "sql_type": toSQLType(fields_by_collection[parent].get("_id",{}))[0],
             "required": True, "rule": "child-to-parent link", "evidence": "one row per list element",
             "confidence": "high"},
         ])
@@ -155,9 +172,12 @@ def generateSchema(profile:dict[str,Any],seedData:dict[str,Any]) ->dict[str,Any]
                 if "." in name or name.endswith("[]") or ({"object","list"} & set(field.get("Types",{}))):
                     continue
                 sql_type, rule, confidence = toSQLType(field)
-                relative = field.get("Presence relative to parent", field.get("Presence Percentage", 0))
+                relative = field.get("Presence relative to parent")
+                required = relative is not None and relative == 100.0
+
+
                 columns.append({"table": table, "name": name, "source": f"{parent}.{path}",
-                                "sql_type": sql_type, "required": relative >= 100,
+                                "sql_type": sql_type, "required": required,
                                 "rule": rule, "evidence": f"{diagnostic(field)}; list-element presence {relative:g}%",
                                 "confidence": confidence})
         else:
@@ -208,7 +228,7 @@ def generateSchema(profile:dict[str,Any],seedData:dict[str,Any]) ->dict[str,Any]
             for path in fields:
                 if not path.endswith("_id"):
                     continue
-                targets = [name for name in profile if singular(name) == path[:-3]]
+                targets = [name for name in profile if singular(name) == path.split(".")[-1][:-3]]
                 if not targets:
                     continue
                 target = targets[0]
@@ -216,6 +236,10 @@ def generateSchema(profile:dict[str,Any],seedData:dict[str,Any]) ->dict[str,Any]
                 matches = sum(value in idSet[target] for value in values)
                 coverage = matches / len(values) * 100 if values else 0.0
                 if coverage < 90.0:
+                    skipped.append({
+                        "source":f"{collection}.{path}",
+                        "reason":f"does not meet min. of 90% coverage. Coverage:{coverage:.2f}"
+                    })
                     continue
 
                 child = next(
@@ -249,7 +273,9 @@ def generateSchema(profile:dict[str,Any],seedData:dict[str,Any]) ->dict[str,Any]
         'columns':columns,
         'keys':keys,
         'indexes':indexes,
-        'relations':relations
+        'relations':relations,
+        'skipped':skipped,
+        
     }
 
 def main():
@@ -260,9 +286,10 @@ def main():
         profile = json.load(file)
     with open(seed,encoding='utf-8') as file:
         seed = json.load(file)
-    with open(candidates,"w",encoding= 'utf-8',newline='\n'):
+    with open(candidates,"w",encoding= 'utf-8',newline='\n') as file:
         json.dump(generateSchema(profile,seed),file,indent=4,ensure_ascii=False)
         file.write('\n')
+    print("Written to ",candidates)
 
 
 if __name__ == "__main__":
