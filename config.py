@@ -70,6 +70,8 @@ def validateConfig(
     Optional arguments let callers test or validate proposed settings without
     changing the module constants that other code imports.
     """
+    #############
+    #helps debug by changing parameters if required to test
     weights_to_check = WEIGHTS if weights is None else weights
     threshold_to_check = (
         FLAG_THRESHOLD if flag_threshold is None else flag_threshold
@@ -87,6 +89,8 @@ def validateConfig(
     mixed_score_to_check = (
         MIXED_TYPE_SCORE if mixed_type_score is None else mixed_type_score
     )
+
+    #############
 
     if not isclose(sum(weights_to_check.values()), 1.0, rel_tol=0.0, abs_tol=1e-9):
         raise ValueError("WEIGHTS must sum to 1.0.")
